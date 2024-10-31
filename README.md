@@ -31,15 +31,15 @@ This project is a web application for managing patients, injuries, and exercises
     python -m venv venv
     source venv/bin/activate
 # On Windows, use `venv\Scripts\activate`
-3.Install the required Python packages:
+3. Install the required Python packages:
 pip install -r requirements.txt
-4.Run the Flask server:
+4. Run the Flask server:
 python server.py
 #Frontend
-1.Navigate to the frontend directory:
+1. Navigate to the frontend directory:
   cd hci-react-gui
-2.Install the required Node.js packages:
+2. Install the required Node.js packages:
     npm install
-3.Start the React development server:
+3. Start the React development server:
   npm start
 
