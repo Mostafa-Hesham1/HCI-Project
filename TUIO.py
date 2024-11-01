@@ -1,48 +1,43 @@
 import socket
 import requests
-from flask_socketio import SocketIO
 
-socketio = SocketIO()
-
-
+# Set up the socket server
 soc = socket.socket()
-hostname = "localhost"  # 127.0.0.1
+hostname = "localhost"
 port = 65434
 soc.bind((hostname, port))
 soc.listen(5)
-conn, addr = soc.accept()
-print("Device connected:", addr)
+print("Waiting for connections...")
 
 try:
     while True:
-        data = conn.recv(1024)  # Receiving data
-        if not data:
-            break
+        conn, addr = soc.accept()
+        print("Device connected:", addr)
 
-        # Decode the received data
-        received_message = data.decode('utf-8')
-        print(f"Received SymbolID: {received_message}")
+        buffer = ""
+        while True:
+            data = conn.recv(1024)
+            if not data:
+                break
 
-        # Send the received message to Flask server via an HTTP POST request
-        requests.post('http://localhost:5000/tuio_event', json={'message': received_message})
+            # Decode the data and add it to the buffer
+            buffer += data.decode('utf-8')
 
-        if received_message == "exit":
-            break
-except ConnectionResetError:
-    print("Connection closed by the remote host")
+            # Split the buffer using the newline delimiter
+            messages = buffer.split('\n')
+            buffer = messages.pop()  # Keep the last part in case it's an incomplete message
+
+            for message in messages:
+                if message.strip():  # Only process non-empty messages
+                    print(f"Received rotate event: {message.strip()}")
+
+                    # Send the message to the Flask server via HTTP POST
+                    requests.post('http://localhost:5000/tuio_event', json={'message': message.strip()})
+
+                    if message.strip() == "exit":
+                        break
+        conn.close()
+except Exception as e:
+    print("Socket server error:", e)
 finally:
-    conn.close()
-
-while True:
-    data = conn.recv(1024)  # Receiving data
-    if not data:
-        break
-
-    # Decode the received data
-    received_message = data.decode('utf-8')
-    print(f"Received SymbolID: {received_message}")
-
-    if received_message == "exit":
-        break
-
-conn.close()
+    soc.close()
