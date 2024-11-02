@@ -25,7 +25,7 @@ This project is a web application for managing patients, injuries, and exercises
 1. Clone the repository:
 
    ```sh
-     git clone https://github.com/Mostafa-Hesham1/HCI-Project.git
+     git clone https://github.com/Mostafa-Hesham1/HCI-Project.git](https://github.com/Mostafa-Hesham1/HCI-Project/tree/Phase2-Test
      cd HCI-Project
   2.Create a virtual environment and activate it:
     python -m venv venv
